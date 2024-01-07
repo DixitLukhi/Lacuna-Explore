@@ -10,7 +10,8 @@
 
 
 const path = require('path'),
-      dynamic_analyzer = require('./dynamic/dynamic');
+      dynamic_analyzer = require('./dynamic/dynamic'),
+	  lacunaSettings = require("../_settings");
 
 
 
@@ -24,7 +25,8 @@ module.exports = function()
 			var edges = [];
 
 			aliveFunctions.forEach((functionData) => {
-				var edge = callGraph.addAliveNode(functionData, 'dynamic');
+				var edgeWeight = lacunaSettings.DYNAMIC_ANALYSER_EDGE_WEIGHT;
+				var edge = callGraph.addAliveNode(functionData, 'dynamic', edgeWeight);
 				edges.push(edge);
 			});
 

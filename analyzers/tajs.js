@@ -7,7 +7,8 @@
  */
 
 const path = require("path"),
-	child_process = require("child_process");
+	child_process = require("child_process"),
+    lacunaSettings = require("../_settings");
 
 module.exports = function()
 {
@@ -18,6 +19,7 @@ module.exports = function()
         /* {caller: {file, start}, callee: {file, start} } */
             
             edges.forEach(function (edge) {
+                var edgeWeight = lacunaSettings.STATIC_ANALYSERS_DEFAULT_EDGE_WEIGHT;
                 if (!edge.caller || !edge.callee) { return; }
                 /* Creates a valid relativePath to sourceDir (instead of pwd)*/
                 edge.caller.file = getSrcPath(edge.caller.file, runOptions);
@@ -28,7 +30,7 @@ module.exports = function()
                 edge.callee = callGraph.convertToFunctionData(edge.callee);
 
 				/* Add the edge to the callGraph */
-				callGraph.addEdge(edge.caller, edge.callee, "tajs");
+				callGraph.addEdge(edge.caller, edge.callee, "tajs", false, edgeWeight);
 			});
 
 			return callback(edges);

@@ -24,7 +24,8 @@
 }
 */
 const path = require("path"),
-	child_process = require("child_process");
+	child_process = require("child_process"),
+    lacunaSettings = require("../_settings");
 
 module.exports = function () {
     this.run = function (runOptions, callGraph, scripts, callback) {
@@ -32,7 +33,8 @@ module.exports = function () {
         closeCompilerAnalyzer(runOptions, scripts, function (edges) {
             if (!edges) { return callback(edges); }
             edges.forEach(function (edge) {
-            /* Convert the nodeData to functionData */
+            var edgeWeight = lacunaSettings.STATIC_ANALYSERS_DEFAULT_EDGE_WEIGHT;
+                /* Convert the nodeData to functionData */
                 edge.caller = callGraph.convertToFunctionData(edge.caller);
                 edge.callee = callGraph.convertToFunctionData(edge.callee);
 
@@ -44,7 +46,7 @@ module.exports = function () {
                 }
                 edge.callee.file = getSrcPath(edge.callee.file, runOptions);
 
-                callGraph.addEdge(edge.caller, edge.callee, "closure_compiler");
+                callGraph.addEdge(edge.caller, edge.callee, "closure_compiler", false, edgeWeight);
             });
             
             callback(edges);

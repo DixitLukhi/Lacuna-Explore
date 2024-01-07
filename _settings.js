@@ -59,5 +59,7 @@ module.exports = {
         return `${functionData.file}[${functionData.bodyRange[0]}:${functionData.bodyRange[1]}]`;
     },
     
-    DYNAMIC_ANALYSER_THRESHOLD_WEIGHT: 1,
+    DYNAMIC_ANALYSER_EDGE_WEIGHT: 1,
+    
+    STATIC_ANALYSERS_DEFAULT_EDGE_WEIGHT: 0.5,
 }

@@ -1,6 +1,7 @@
 var logger = require("../_logger");
 const child_process = require("child_process");
 const path = require("path");
+const lacunaSettings = require("../_settings");
 
 module.exports = function () {
     this.run = function (runOptions, callGraph, scripts, callback) {
@@ -27,6 +28,7 @@ module.exports = function () {
                 npmCgEdges = JSON.parse(npmCgEdges);
 
                 npmCgEdges.forEach(npmCgEdge => {
+                    var edgeWeight = lacunaSettings.STATIC_ANALYSERS_DEFAULT_EDGE_WEIGHT;
                     var callerGroups = getGroups(npmCgEdge.caller);
                     var calleeGroups = getGroups(npmCgEdge.callee);
                     
@@ -37,7 +39,7 @@ module.exports = function () {
                     }
                     var callee = callGraph.convertToFunctionData({functionName: calleeGroups.functionName});
     
-                    var edge = callGraph.addEdge(caller, callee, "npm_cg", true);
+                    var edge = callGraph.addEdge(caller, callee, "npm_cg", true, edgeWeight);
                     scriptEdges.push(edge);
                 });
 

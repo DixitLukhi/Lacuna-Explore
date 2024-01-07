@@ -307,7 +307,7 @@ function getOuterRangeArray(functions) {
             if (func.range[0] > range[1] && func.range[1] > range[1]) {
                 return false; /* new range on the top side */
             }
-            console.log("Invalid range error"); process.exit();
+            //console.log("Invalid range error"); process.exit();
         });
 
         /* new range will be added to the array (as copy) */

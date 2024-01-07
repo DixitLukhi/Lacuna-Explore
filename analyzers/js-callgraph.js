@@ -23,13 +23,13 @@ module.exports = function()
 		
 		jsCallgraphAnalyzer(entryDirectory, analyzer, edges => {
         /* {caller: {file, start}, callee: {file, start} } */
-
             if (analyzer === 'acg') {
                 let scriptSrcs = scripts.map(s => {
                     let entryDir = path.dirname(path.join(runOptions.directory, runOptions.entry));
                     return path.join(entryDir, s.src);
                 });
                 edges.forEach(function (edge) {
+                    var edgeWeight = lacunaSettings.STATIC_ANALYSERS_DEFAULT_EDGE_WEIGHT; 
                     /* fix all file issues */
                     edge.caller.file = acg.getSrcPath(acg.basenameToScriptSrc(edge.caller.file, scriptSrcs), runOptions);
                     edge.callee.file = acg.getSrcPath(acg.basenameToScriptSrc(edge.callee.file, scriptSrcs), runOptions);
@@ -38,25 +38,27 @@ module.exports = function()
                         edge.caller = callGraph.assertRootNode({ file: edge.caller.file, range: [null, null] }, true);
                     }
                     
-                    callGraph.addEdge(edge.caller, edge.callee, "acg");
+                    callGraph.addEdge(edge.caller, edge.callee, "acg", false, edgeWeight);
                 });
             }  
              else if (analyzer === 'nativecalls') {
                  edges.forEach(function(edge)
                  {
+                    var edgeWeight = lacunaSettings.STATIC_ANALYSERS_DEFAULT_EDGE_WEIGHT;
                      edge.caller.file =  getSrcPath(path.relative(process.cwd(), edge.caller.file), runOptions);
                      edge.callee.file = getSrcPath(path.relative(process.cwd(), edge.callee.file), runOptions);
-                     callGraph.addEdge(edge.caller, edge.callee, "nativecalls");
+                     callGraph.addEdge(edge.caller, edge.callee, "nativecalls", false, edgeWeight);
                  });
                  return callback(edges);
              } 
             else { // static analyzer     
             edges.forEach(function (edge) {
+                var edgeWeight = lacunaSettings.STATIC_ANALYSERS_DEFAULT_EDGE_WEIGHT;
                 if (!edge.caller || !edge.callee) { return; }
                 /* Creates a valid relativePath to sourceDir (instead of pwd)*/
                 edge.caller.file =  getSrcPath(path.relative(process.cwd(), edge.caller.file), runOptions);
                 edge.callee.file = getSrcPath(path.relative(process.cwd(), edge.callee.file), runOptions);
-				callGraph.addEdge(edge.caller, edge.callee, analyzer);
+				callGraph.addEdge(edge.caller, edge.callee, analyzer, false, edgeWeight);
 			});
 
             }

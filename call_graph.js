@@ -80,9 +80,9 @@ module.exports = class CallGraph {
     /**
      * Creates a new alive node with an unknown caller
      */
-    addAliveNode(functionData, analyzer) {
+    addAliveNode(functionData, analyzer, edgeWeight) {
         var rootNodeFunctionData = { file: functionData.file, range: [null, null] };
-        var edge = this.addEdge(rootNodeFunctionData, functionData, analyzer, true);
+        var edge = this.addEdge(rootNodeFunctionData, functionData, analyzer, true, edgeWeight);
         return edge;
     }
 
@@ -97,7 +97,7 @@ module.exports = class CallGraph {
      * (TODO better fix: create all rootNodes at the start - thus for every
      * involved file)
      */
-    addEdge(functionDataCaller, functionDataCallee, analyzer, stripObject) {
+    addEdge(functionDataCaller, functionDataCallee, analyzer, stripObject, edgeWeight) {
         if (this.fitsRootNode(functionDataCaller) && !this.getRootNode(functionDataCaller)) {
             this.rootNodes.push(new Node(functionDataCaller));
         }
@@ -105,13 +105,7 @@ module.exports = class CallGraph {
         var caller = this.getNode(functionDataCaller, false, analyzer);
         var callee = this.getNode(functionDataCallee, false, analyzer);
 
-        if (analyzer === "dynamic") {
-            this.edgeWeight = lacunaSettings.DYNAMIC_ANALYSER_THRESHOLD_WEIGHT;
-        } else {
-            this.edgeWeight = 0.5;
-        }
-
-        var edgeWeight = this.edgeWeight;
+        this.edgeWeight = edgeWeight;
 
         if (!caller || !callee) { return null; }
 

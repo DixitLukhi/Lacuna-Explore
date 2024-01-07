@@ -24,6 +24,7 @@ module.exports = function()
         /* {caller: {file, start}, callee: {file, start} } */
             
             edges.forEach(function (edge) {
+                var edgeWeight = lacunaSettings.STATIC_ANALYSERS_DEFAULT_EDGE_WEIGHT;
                 if (!edge.caller || !edge.callee) { return; }
                 /* Creates a valid relativePath to sourceDir (instead of pwd)*/
                 edge.caller.file = getSrcPath(edge.caller.file, runOptions);
@@ -34,7 +35,7 @@ module.exports = function()
                 edge.callee = callGraph.convertToFunctionData(edge.callee);
 
 				/* Add the edge to the callGraph */
-				callGraph.addEdge(edge.caller, edge.callee, "jelly");
+				callGraph.addEdge(edge.caller, edge.callee, "jelly", false, edgeWeight);
 			});
 
 			return callback(edges);

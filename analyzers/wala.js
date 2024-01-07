@@ -18,6 +18,7 @@ module.exports = function() {
 		var entryFile = path.join(runOptions.directory, runOptions.entry);
 		
 		walaAnalyzer(entryFile, (edges) => {
+			var edgeWeight = lacunaSettings.STATIC_ANALYSERS_DEFAULT_EDGE_WEIGHT;
 			/* {caller: {file, start, end}, callee: {file, start, end} } */
 			if (!edges) edges = [];
 			edges.forEach(function (edge) {
@@ -33,7 +34,7 @@ module.exports = function() {
 				}
 
 				/* Add the edge to the callGraph */
-				callGraph.addEdge(functionDataCaller, edge.callee, "wala");
+				callGraph.addEdge(functionDataCaller, edge.callee, "wala", false, edgeWeight);
 			});
 
 			return callback(edges);
